@@ -1,0 +1,37 @@
+-- [[ EFEITO VISUAL: CORES VIVAS (SATURAÇÃO) COM TOM AZULADO MUITO SUAVE ]] --
+
+local Lighting = game:GetService("Lighting")
+
+-- === 1. CONFIGURAÇÕES GERAIS DE ILUMINAÇÃO ===
+Lighting.Brightness = 1.5 
+Lighting.ExposureCompensation = 0.2 
+
+-- === 2. COLOR CORRECTION (Para Saturação e Tom Azulado) ===
+
+local colorCorrection = Lighting:FindFirstChildOfClass("ColorCorrectionEffect")
+if not colorCorrection then
+    colorCorrection = Instance.new("ColorCorrectionEffect")
+    colorCorrection.Parent = Lighting
+end
+
+-- Propriedades da Correção de Cor:
+colorCorrection.Saturation = 1.50 
+colorCorrection.Contrast = 0.15   
+-- AQUI ESTÁ A MUDANÇA: Aumentamos o R e G para 200. Isso neutraliza o azul (255),
+-- transformando-o em um tom azulado muito mais sutil e quase branco.
+colorCorrection.TintColor = Color3.fromRGB(200, 200, 255) 
+
+-- === 3. BLOOM EFFECT (Para Brilho e Suavidade) ===
+
+local bloom = Lighting:FindFirstChildOfClass("BloomEffect")
+if not bloom then
+    bloom = Instance.new("BloomEffect")
+    bloom.Parent = Lighting
+end
+
+-- Configurações do Bloom (Brilho suave):
+bloom.Intensity = 0.6    
+bloom.Size = 40          
+bloom.Threshold = 0.9    
+
+print("🎨 Efeitos Visuais Aplicados: Cores Saturadas, Tom Azulado Suave e Bloom.")
