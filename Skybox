@@ -1,37 +1,70 @@
--- [[ EFEITO VISUAL: CORES VIVAS (SATURAÇÃO) COM TOM AZULADO MUITO SUAVE ]] --
+-- [[ VERIFICAÇÃO DE SKYBOX E ATIVAÇÃO POR TECLA (SHIFT + ENTER) ]] --
 
+local UIS = game:GetService("UserInputService")
 local Lighting = game:GetService("Lighting")
 
--- === 1. CONFIGURAÇÕES GERAIS DE ILUMINAÇÃO ===
-Lighting.Brightness = 1.5 
-Lighting.ExposureCompensation = 0.2 
+-- NOVO ID DO SKYBOX FORNECIDO PELO USUÁRIO
+local skyboxId = "rbxassetid://128903515226062" 
 
--- === 2. COLOR CORRECTION (Para Saturação e Tom Azulado) ===
+-- ID PÚBLICO PARA TESTE (APENAS PARA DIAGNÓSTICO RÁPIDO)
+local publicTestId = "rbxassetid://128903515226062" 
 
-local colorCorrection = Lighting:FindFirstChildOfClass("ColorCorrectionEffect")
-if not colorCorrection then
-    colorCorrection = Instance.new("ColorCorrectionEffect")
-    colorCorrection.Parent = Lighting
+local function setSkybox()
+    print("--- Tentando configurar Skybox... ---")
+    
+    -- 1. Remoção de Skybox EXISTENTE
+    for _, obj in pairs(Lighting:GetChildren()) do
+        if obj:IsA("Sky") then
+            obj:Destroy()
+            print("  [INFO]: Skybox existente removido.")
+        end
+    end
+    
+    -- 2. Criação e Configuração do NOVO Skybox
+    local newSky = Instance.new("Sky")
+    
+    -- ATENÇÃO: Usando o ID fornecido
+    newSky.SkyboxFt = skyboxId
+    newSky.SkyboxBk = skyboxId
+    newSky.SkyboxDn = skyboxId
+    newSky.SkyboxLf = skyboxId
+    newSky.SkyboxRt = skyboxId
+    newSky.SkyboxUp = skyboxId
+    
+    newSky.Parent = Lighting
+    
+    print("🌌 Skybox ID: " .. skyboxId .. " criado e ativado.")
+    
+    -- 3. DIAGNÓSTICO
+    if Lighting:FindFirstChildOfClass("Sky") == newSky then
+        print("✅ Skybox adicionado com sucesso. Se não aparecer, o ID está provavelmente privado.")
+    else
+        warn("❌ Falha na adição do Skybox. Verifique se o script é um LocalScript.")
+    end
 end
 
--- Propriedades da Correção de Cor:
-colorCorrection.Saturation = 1.50 
-colorCorrection.Contrast = 0.15   
--- AQUI ESTÁ A MUDANÇA: Aumentamos o R e G para 200. Isso neutraliza o azul (255),
--- transformando-o em um tom azulado muito mais sutil e quase branco.
-colorCorrection.TintColor = Color3.fromRGB(200, 200, 255) 
+-- === LÓGICA DE TECLADO (SHIFT + ENTER) ===
 
--- === 3. BLOOM EFFECT (Para Brilho e Suavidade) ===
+UIS.InputBegan:Connect(function(input, gameProcessedEvent)
+    
+    if gameProcessedEvent then
+        return
+    end
+    
+    if input.KeyCode == Enum.KeyCode.Return then
+        
+        local shiftPressed = UIS:IsKeyDown(Enum.KeyCode.LeftShift) or UIS:IsKeyDown(Enum.KeyCode.RightShift)
+        
+        if shiftPressed then
+            print(">>> COMBINAÇÃO SHIFT + ENTER DETECTADA! <<<")
+            setSkybox()
+        end
+    end
+end)
 
-local bloom = Lighting:FindFirstChildOfClass("BloomEffect")
-if not bloom then
-    bloom = Instance.new("BloomEffect")
-    bloom.Parent = Lighting
-end
+print("Script de Skybox Carregado. Pressione SHIFT + ENTER para tentar ativar a Skybox.")
 
--- Configurações do Bloom (Brilho suave):
-bloom.Intensity = 0.6    
-bloom.Size = 40          
-bloom.Threshold = 0.9    
-
-print("🎨 Efeitos Visuais Aplicados: Cores Saturadas, Tom Azulado Suave e Bloom.")
+-- Função de Teste Rápido (Opcional):
+-- Se quiser testar o script com um ID público para ver se a lógica está OK,
+-- remova os dois traços (--) da linha abaixo e use SHIFT + ENTER.
+-- local function testPublicSkybox() skyboxId = publicTestId; setSkybox(); skyboxId = "rbxassetid://93846329039932" end
