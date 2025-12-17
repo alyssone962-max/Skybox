@@ -1,13 +1,8 @@
--- [[ VERIFICAÇÃO DE SKYBOX E ATIVAÇÃO POR TECLA (SHIFT + ENTER) ]] --
-
 local UIS = game:GetService("UserInputService")
 local Lighting = game:GetService("Lighting")
 
--- NOVO ID DO SKYBOX FORNECIDO PELO USUÁRIO
+-- ID DO SKYBOX
 local skyboxId = "rbxassetid://128903515226062" 
-
--- ID PÚBLICO PARA TESTE (APENAS PARA DIAGNÓSTICO RÁPIDO)
-local publicTestId = "rbxassetid://128903515226062" 
 
 local function setSkybox()
     print("--- Tentando configurar Skybox... ---")
@@ -23,7 +18,6 @@ local function setSkybox()
     -- 2. Criação e Configuração do NOVO Skybox
     local newSky = Instance.new("Sky")
     
-    -- ATENÇÃO: Usando o ID fornecido
     newSky.SkyboxFt = skyboxId
     newSky.SkyboxBk = skyboxId
     newSky.SkyboxDn = skyboxId
@@ -33,38 +27,24 @@ local function setSkybox()
     
     newSky.Parent = Lighting
     
-    print("🌌 Skybox ID: " .. skyboxId .. " criado e ativado.")
-    
-    -- 3. DIAGNÓSTICO
-    if Lighting:FindFirstChildOfClass("Sky") == newSky then
-        print("✅ Skybox adicionado com sucesso. Se não aparecer, o ID está provavelmente privado.")
-    else
-        warn("❌ Falha na adição do Skybox. Verifique se o script é um LocalScript.")
-    end
+    print("🌌 Skybox ID: " .. skyboxId .. " ativado com sucesso.")
 end
 
--- === LÓGICA DE TECLADO (SHIFT + ENTER) ===
+-- === EXECUÇÃO IMEDIATA ===
+-- Isso faz com que mude assim que você der "Execute"
+setSkybox()
 
+-- === LÓGICA DE TECLADO (SHIFT + ENTER) - MANTIDA COMO RESERVA ===
 UIS.InputBegan:Connect(function(input, gameProcessedEvent)
-    
-    if gameProcessedEvent then
-        return
-    end
+    if gameProcessedEvent then return end
     
     if input.KeyCode == Enum.KeyCode.Return then
-        
         local shiftPressed = UIS:IsKeyDown(Enum.KeyCode.LeftShift) or UIS:IsKeyDown(Enum.KeyCode.RightShift)
-        
         if shiftPressed then
-            print(">>> COMBINAÇÃO SHIFT + ENTER DETECTADA! <<<")
+            print(">>> Reaplicando Skybox via SHIFT + ENTER <<<")
             setSkybox()
         end
     end
 end)
 
-print("Script de Skybox Carregado. Pressione SHIFT + ENTER para tentar ativar a Skybox.")
-
--- Função de Teste Rápido (Opcional):
--- Se quiser testar o script com um ID público para ver se a lógica está OK,
--- remova os dois traços (--) da linha abaixo e use SHIFT + ENTER.
--- local function testPublicSkybox() skyboxId = publicTestId; setSkybox(); skyboxId = "rbxassetid://93846329039932" end
+print("✅ Script Executado: Skybox alterada automaticamente.")
